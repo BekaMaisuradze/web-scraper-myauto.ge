@@ -10,7 +10,7 @@ class MyautoSpider(scrapy.Spider):
     def parse(self, response):
 
         detail_page_links = response.css('div.car-name-left a::attr(href)').getall()
-        yield from response.follow_all(detail_page_links, self.parse_announcement)
+        yield from response.follow_all(detail_page_links[:1], self.parse_announcement)
 
         self.pages_left -= 1
         if self.pages_left > 1:
@@ -40,5 +40,11 @@ class MyautoSpider(scrapy.Spider):
                 res[key] = val
 
         res['Customs cleared'] = 1 if len(response.css('.levy-true')) > 0 else 0
+
+        res['imgs'] = []
+        imgs = response.css('div.thumbnail-image img')
+        for img in imgs:
+            soup = BeautifulSoup(img.get(), 'html.parser')
+            res['imgs'].append(soup.img['src'])
 
         yield res

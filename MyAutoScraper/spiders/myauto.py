@@ -10,7 +10,7 @@ class MyautoSpider(scrapy.Spider):
     def parse(self, response):
 
         detail_page_links = response.css('div.car-name-left a::attr(href)').getall()
-        yield from response.follow_all(detail_page_links, self.parse_author)
+        yield from response.follow_all(detail_page_links, self.parse_announcement)
 
         self.pages_left -= 1
         if self.pages_left > 1:
@@ -19,5 +19,26 @@ class MyautoSpider(scrapy.Spider):
             if next_page is not None:
                 yield response.follow(next_page, callback=self.parse)
 
-    def parse_author(self, response):
-        yield {'len': len(response.text) }
+    def parse_announcement(self, response):
+        res = {}
+        lefts = response.css('table.detail-car-table tr th.th-left')
+        for item in lefts:
+            soup = BeautifulSoup(item.get(), 'html.parser')
+            divs = soup.find_all('div')
+            if (len(divs) == 2):
+                key = divs[0].string.replace('\xa0', ' ').strip()
+                val = divs[1].h2.string if divs[1].h2 else divs[1].string
+                res[key] = ' '.join(val.replace('\xa0', ' ').split()) if val else ''
+
+        rights = response.css('table.detail-car-table tr th.th-right')
+        for item in rights:
+            soup = BeautifulSoup(item.get(), 'html.parser')
+            divs = soup.find_all('div')
+            if (len(divs) == 2 and divs[1].i.has_attr('class')):
+                key = divs[0].string.replace('\xa0', ' ').strip()
+                val = 1 if divs[1].i['class'][1] == 'fa-check' else 0
+                res[key] = val
+
+        res['Customs cleared'] = 1 if len(response.css('.levy-true')) > 0 else 0
+
+        yield res

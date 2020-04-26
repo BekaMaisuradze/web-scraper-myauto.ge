@@ -12,7 +12,11 @@ for line in reader:
     urls = line[-1].split(',')
 
     for i in range(len(urls)):
-        img_data = requests.get(urls[i]).content
+        try:
+            img_data = requests.get(urls[i]).content
+        except:
+            continue
+
         filename = 'images/%s/%d.jpg' % (id, i+1)
 
         if not os.path.exists(os.path.dirname(filename)):

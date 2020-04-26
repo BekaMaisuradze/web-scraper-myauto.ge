@@ -5,7 +5,7 @@ class MyautoSpider(scrapy.Spider):
     name = 'myauto'
     allowed_domains = ['myauto.ge']
     start_urls = ['https://www.myauto.ge/en/s/00/0/00/00/00/00/00/cars?stype=0&currency_id=3&det_search=0&ord=7&category_id=m0&keyword=']
-    pages_left = 1
+    pages_left = 10
     fields = ['Manufacturer', 'Model', 'Category', 'Mileage', 'Gear box type',
             'Doors', 'Wheel', 'Color', 'Interior color', 'VIN', 'Leather interior']
     id = 1
@@ -18,7 +18,7 @@ class MyautoSpider(scrapy.Spider):
         self.pages_left -= 1
         if self.pages_left > 1:
             next_page = response.css('li.pag-next a::attr(href)').get()
-            yield { 'next_page' : next_page }
+            #yield { 'next_page' : next_page }
             if next_page is not None:
                 yield response.follow(next_page, callback=self.parse)
 

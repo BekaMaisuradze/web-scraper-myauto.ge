@@ -1,0 +1,11 @@
+
+
+How to run:
+1. python -m scrapy crawl myauto -o _temp_files/features_temp.csv
+2. python images_downloader.py
+
+By default, it pulls the first 10 pages from myauto, that's because there are thousands of pages and needs lots of time to finish. You can change it on 8th line in myauto.py spider file
+
+Result files:
+1. features.csv
+2. images folder

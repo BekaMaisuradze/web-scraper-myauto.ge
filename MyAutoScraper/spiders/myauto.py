@@ -8,6 +8,7 @@ class MyautoSpider(scrapy.Spider):
     pages_left = 1
     fields = ['Manufacturer', 'Model', 'Category', 'Mileage', 'Gear box type',
             'Doors', 'Wheel', 'Color', 'Interior color', 'VIN', 'Leather interior']
+    id = 1
 
     def parse(self, response):
 
@@ -22,7 +23,9 @@ class MyautoSpider(scrapy.Spider):
                 yield response.follow(next_page, callback=self.parse)
 
     def parse_announcement(self, response):
-        res = {}
+        res = { 'Id': self.id }
+        self.id += 1
+
         lefts = response.css('table.detail-car-table tr th.th-left')
         for item in lefts:
             soup = BeautifulSoup(item.get(), 'html.parser')

@@ -16,7 +16,7 @@ class MyautoSpider(scrapy.Spider):
         yield from response.follow_all(detail_page_links, self.parse_announcement)
 
         self.pages_left -= 1
-        if self.pages_left > 1:
+        if self.pages_left > 0:
             next_page = response.css('li.pag-next a::attr(href)').get()
             #yield { 'next_page' : next_page }
             if next_page is not None:

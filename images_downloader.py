@@ -3,7 +3,7 @@ import requests
 import os
 import errno
 
-file=open('_temp_files/features_temp.csv', "r")
+file=open('_temp_files/features_temp.csv', "r", encoding="utf8")
 reader = csv.reader(file)
 next(reader)        # skip header
 
@@ -29,8 +29,8 @@ for line in reader:
         with open(filename, 'wb') as handler:
             handler.write(img_data)
 
-with open('_temp_files/features_temp.csv', 'r') as fin:
-    with open('features.csv', 'w', newline='') as fout:
+with open('_temp_files/features_temp.csv', 'r', encoding="utf8") as fin:
+    with open('features.csv', 'w', newline='', encoding="utf8") as fout:
         writer=csv.writer(fout)
         for row in csv.reader(fin):
             writer.writerow(row[:-1])
